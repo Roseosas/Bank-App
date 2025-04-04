@@ -1,6 +1,10 @@
 package Service;
 
 public interface FileService {
-    void loadInitialData();
+
+    void loadInitialUsers();
+
+    void loadInitialAccounts();
+
     void exportData();
 }

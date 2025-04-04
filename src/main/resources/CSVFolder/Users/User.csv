@@ -1,0 +1,18 @@
+userId,name,email,password,role
+1,John Doe,johndoe@example.com,hashedpassword,ADMIN
+2,Jane Smith,janesmith@example.com,hashedpassword,CUSTOMER
+3,Bob Johnson,bobjohnson@example.com,hashedpassword,CUSTOMER
+4,Paul Emmanuel,paulemmanuel@example.com,hashedpassword,CUSTOMER
+5,Sam Kelvin,samkelvin@example.com,hashedpassword,CUSTOMER
+6,Joy Osayi,osayi@gmail.com,osayijoy,ADMIN
+1,John Doe,johndoe@example.com,hashedpassword,ADMIN
+2,Jane Smith,janesmith@example.com,hashedpassword,CUSTOMER
+3,Bob Johnson,bobjohnson@example.com,hashedpassword,CUSTOMER
+4,Paul Emmanuel,paulemmanuel@example.com,hashedpassword,CUSTOMER
+5,Sam Kelvin,samkelvin@example.com,hashedpassword,CUSTOMER
+6,Joy Osayi,osayi@gmail.com,osayijoy,ADMIN1,John Doe,johndoe@example.com,hashedpassword,ADMIN
+2,Jane Smith,janesmith@example.com,hashedpassword,CUSTOMER
+3,Bob Johnson,bobjohnson@example.com,hashedpassword,CUSTOMER
+4,Paul Emmanuel,paulemmanuel@example.com,hashedpassword,CUSTOMER
+5,Sam Kelvin,samkelvin@example.com,hashedpassword,CUSTOMER
+6,Joy Osayi,osayi@gmail.com,osayijoy,ADMIN

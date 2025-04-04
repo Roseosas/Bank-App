@@ -1,3 +1,4 @@
+import Enums.Menu;
 import Enums.Role;
 import Service.AccountService;
 import Service.FileService;
@@ -8,9 +9,10 @@ import Service.UserService;
 import models.User;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Scanner;
 
-import static Enums.Role.Admin;
+import static Enums.Role.ADMIN;
 
 public class Main {
 
@@ -18,7 +20,7 @@ public class Main {
     private static final UserService userService = UserServiceImplementation.getInstance();
     private static final AccountService accountService = AccountServiceImplementation.getInstance();
     private static final FileService fileService = new FileServiceImplementation("src/main/resources/CSVFolder/Users", "src/main/resources/CSVFolder/Accounts");
-    private static int x =1;
+    private static Menu currentMenu = Menu.MAIN_MENU;;
     private static int choice;
 
 
@@ -56,12 +58,16 @@ public class Main {
         System.out.println("Enter your password");
         String password = scanner.nextLine();
 
+        var user = getUserByEmail(email);
+
         userService.login(email, password);
-        if (userService.getCurrentUser().getRole() == Admin) {
-            x = 3;
+
+
+        if (user.getRole() == ADMIN) {
+            currentMenu = Menu.ADMIN_MENU;
             showAdminMenu();
         } else {
-            x = 1;
+            currentMenu = Menu.CUSTOMER_MENU;;
             showCustomerMenu();
         }
     }
@@ -86,7 +92,9 @@ public class Main {
 
     // Admin functionality: View all users
     private static void viewUsers () {
-        System.out.println("All users:");
+        System.out.println();
+        System.out.println("______________________________________________________");
+        System.out.println("List of users:");
         for (User user : userService.viewUsers()) {
             System.out.println(user.getName() + " (" + user.getRole() + ")");
         }
@@ -109,13 +117,15 @@ public class Main {
 
     // Customer Menu Options
     private static void showCustomerMenu () {
-        while (x==1){
+        while (currentMenu==Menu.CUSTOMER_MENU){
+            System.out.println("Welcome to the customer menu");
             System.out.println("1. Login as a user");
             System.out.println("2. Transfer Funds");
             System.out.println("3. Check balance");
             System.out.println("4. Create an account");
             System.out.println("5. Set balance");
             System.out.print("Choose an option: ");
+            System.out.println();
             choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
             switch (choice) {
@@ -145,11 +155,13 @@ public class Main {
     }
 
     public static void mainMenu(){
-        while (x == 2) {
+        while (currentMenu == Menu.MAIN_MENU) {
+            System.out.println("Welcome to the banking system");
             System.out.println("1. Register");
             System.out.println("2. Login");
             System.out.println("3. Exit");
             System.out.println("Choose an option:");
+            System.out.println();
             choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice) {
@@ -168,15 +180,18 @@ public class Main {
 
     // Admin Menu Options
     private static void showAdminMenu () {
-        while (x==3){
+        while (currentMenu==Menu.ADMIN_MENU){
+            System.out.println("Welcome to the admin menu");
             System.out.println("1. Register new user");
             System.out.println("2. Login user");
             System.out.println("3. View All Users");
             System.out.println("4. Delete User");
-            System.out.println("5. Reload data");
-            System.out.println("6. Export data");
-            System.out.println("6. Logout");
+            System.out.println("5. Reload User data");
+            System.out.println("6. Reload Account data");
+            System.out.println("7. Export data");
+            System.out.println("8. Logout");
             System.out.print("Choose an option: ");
+            System.out.println();
             choice = scanner.nextInt();
             switch (choice) {
                 case 1:
@@ -191,10 +206,12 @@ public class Main {
                 case 4:
                     deleteUser();
                 case 5:
-                    fileService.loadInitialData();
+                    fileService.loadInitialUsers();
                 case 6:
-                    fileService.exportData();
+                    fileService.loadInitialAccounts();
                 case 7:
+                    fileService.exportData();
+                case 8:
                     logout();
                 default:
                     System.out.println("Invalid option.");
@@ -206,6 +223,14 @@ public class Main {
     }
 
     public static void logout(){
-        x=1;
+        currentMenu=Menu.MAIN_MENU;
+    }
+
+    public static Map<String, User> loadUsers(){
+        return userService.getUsers();
+    }
+
+    public static User getUserByEmail(String email){
+        return userService.getUserByEmail(email);
     }
 }

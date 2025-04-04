@@ -1,6 +1,7 @@
 package Service.Implementation;
 
 import Enums.Role;
+import Service.FileService;
 import Service.UserService;
 import models.Admin;
 import models.Customer;
@@ -9,10 +10,15 @@ import models.User;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class UserServiceImplementation implements UserService {
     private Map<String, User> users = new HashMap<>();
     private User currentUser;
+    private static final FileService fileService = new FileServiceImplementation("src/main/resources/CSVFolder/Users", "src/main/resources/CSVFolder/Accounts");
+
+
+    private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
     private static UserServiceImplementation Instance;
 
@@ -27,8 +33,13 @@ public class UserServiceImplementation implements UserService {
     }
 
     public boolean registerUser(String email, String password, String name, String userId, Role role){
-        if (!validEmail(email) || validPassword(password)){
-            System.out.println("Invalid email or password");
+        if (!validEmail(email)) {
+            System.out.println("Invalid Email");
+            return false;
+        }
+
+        if (!validPassword(password)){
+            System.out.println("Invalid password");
             return false;
         }
         for (User user : users.values()){
@@ -38,7 +49,7 @@ public class UserServiceImplementation implements UserService {
             }
         }
         User newUser;
-        if(role.equals(Role.Admin)){
+        if(role.equals(Role.ADMIN)){
             newUser = new Admin(userId, name, email, password);
         }else{
             newUser = new Customer(userId, name, email, password);
@@ -59,31 +70,29 @@ public class UserServiceImplementation implements UserService {
     }
     @Override
     public List<User> viewUsers(){
-        if(!currentUser.getRole().equals(Role.Admin)){
+        if(!currentUser.getRole().equals(Role.ADMIN)){
             System.out.println("You are not an Admin");
             return null;
         }
-        System.out.println(users.values().stream().toList());
         return users.values().stream().toList();
     }
 
 
 
-    public boolean deleteUser(String userId) {
-        if (currentUser.getRole().equals(Role.Admin)) {
+    public void deleteUser(String userId) {
+        if (currentUser.getRole().equals(Role.ADMIN)) {
             if (users.get(userId) != null) {
                 users.remove(userId);
                 System.out.println("User deleted");
-                return true;
+                return;
             }
             System.out.println("User does not exist");
-            return false;
+            return;
         }
         System.out.println("You are not an Amin");
-        return false;
     }
     private boolean validEmail(String email){
-        return email != null && email.matches("^[A-Za-z0-9+_.-]+@(-+)$");
+        return email != null && Pattern.matches(EMAIL_REGEX, email);
 
     }
     private boolean validPassword(String password){
@@ -96,5 +105,16 @@ public class UserServiceImplementation implements UserService {
     @Override
     public Map<String, User> getUsers(){
         return  users;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        fileService.loadInitialUsers();
+        for (User user : users.values()) {
+            if (user.getEmail().equals(email)) {
+                return user;
+            }
+        }
+        return null;
     }
 }

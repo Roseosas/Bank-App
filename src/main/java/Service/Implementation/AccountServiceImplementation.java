@@ -49,12 +49,12 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public BankAccount createAccount(String UserId){
+    public BankAccount createAccount(String userId){
         currentUser = getCurrentUser();
-        if (currentUser.getUserId().equals(UserId)){
-            BankAccount newAccount = new BankAccount(AccountUtility.generateAccountNumber(), BigDecimal.valueOf(0.0));
+        if (currentUser.getUserId().equals(userId)){
+            BankAccount newAccount = new BankAccount(userId, AccountUtility.generateAccountNumber(), BigDecimal.valueOf(0.0));
             currentAccount = newAccount;
-            account.put(UserId, newAccount);
+            account.put(userId, newAccount);
             System.out.println("Account created successfully");
             System.out.println(account);
             return currentAccount;
@@ -85,7 +85,7 @@ public class AccountServiceImplementation implements AccountService {
     }
     @Override
     public BankAccount createAccount(String userId, String accountNumber, BigDecimal balance){
-        BankAccount newAccount = new BankAccount(accountNumber, balance);
+        BankAccount newAccount = new BankAccount(userId, accountNumber, balance);
         account.put(userId, newAccount);
         return newAccount;
 
